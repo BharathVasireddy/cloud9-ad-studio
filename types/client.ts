@@ -2,43 +2,56 @@
  * Client management types for Ad Studio
  */
 
-export interface Client {
-  id: string
-  userId: string
-  name: string
-  industry: string
-  website?: string
-  description?: string
-  targetAudience: string
-  keyProducts?: string[]
-  brand: {
-    voiceTone: 'professional' | 'casual' | 'friendly' | 'authoritative' | 'playful'
-    colors?: string[]
-    keywords?: string[]
-    avoidWords?: string[]
-  }
-  createdAt: Date
-  updatedAt: Date
-  isActive: boolean
+// Service definition for client business offerings
+export interface Service {
+  id: string;
+  name: string;
+  description: string;
+  category: 'product' | 'service' | 'digital' | 'consulting' | 'other';
+  url?: string;
 }
 
-/**
- * Client creation data
- */
+// Enhanced client interface for Phase 2
+export interface Client {
+  id: string;
+  userId: string;
+  
+  // Basic Information
+  businessName: string;
+  contactEmail?: string;
+  city?: string;
+  industry?: string;
+  website?: string;
+  description?: string;
+  
+  // Business Details
+  services: Service[];
+  
+  // Metadata
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
+}
+
+// Form data types
 export interface CreateClientData {
-  userId: string
-  name: string
-  industry: string
-  website?: string
-  description?: string
-  targetAudience: string
-  keyProducts?: string[]
-  brand: {
-    voiceTone: 'professional' | 'casual' | 'friendly' | 'authoritative' | 'playful'
-    colors?: string[]
-    keywords?: string[]
-    avoidWords?: string[]
-  }
+  businessName: string;
+  contactEmail?: string;
+  city?: string;
+  industry?: string;
+  website?: string;
+  description?: string;
+  services: Omit<Service, 'id'>[];
+}
+
+export interface UpdateClientData extends Partial<CreateClientData> {}
+
+// Client statistics
+export interface ClientStats {
+  totalClients: number;
+  activeClients: number;
+  recentClients: number;
+  topIndustries: { industry: string; count: number }[];
 }
 
 /**

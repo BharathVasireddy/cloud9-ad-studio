@@ -58,24 +58,21 @@ export interface PerformanceMetrics {
  */
 export interface GenerationRequest {
   clientId: string
-  platform: 'google' | 'facebook' | 'both'
-  objective: string
-  targetAudience: string
-  keyMessage: string
-  callToAction?: string
-  constraints?: GenerationConstraints
-}
-
-/**
- * Generation constraints and preferences
- */
-export interface GenerationConstraints {
-  maxHeadlines: number // Default: 15 for Google Ads
-  maxDescriptions: number // Default: 4 for Google Ads
-  tone: 'professional' | 'casual' | 'friendly' | 'authoritative' | 'playful'
-  includeKeywords?: string[]
-  avoidWords?: string[]
-  emphasizeFeatures?: string[]
+  serviceIds: string[]
+  platform: 'google' | 'facebook'
+  adType: 'search' | 'display' | 'video' | 'shopping'
+  
+  campaignGoal: 'awareness' | 'traffic' | 'leads' | 'sales' | 'engagement'
+  targetAudience?: string
+  budget?: {
+    amount: number
+    currency: string
+    period: 'daily' | 'weekly' | 'monthly'
+  }
+  
+  specialOffers?: string
+  seasonalContext?: string
+  customPrompt?: string
 }
 
 /**
@@ -158,4 +155,36 @@ export const DEFAULT_GENERATION_CONSTRAINTS: GenerationConstraints = {
   includeKeywords: [],
   avoidWords: ['!'], // No exclamation marks for Google Ads
   emphasizeFeatures: [],
+}
+
+/**
+ * Enhanced generation result interface
+ */
+export interface GenerationResult {
+  id: string
+  userId: string
+  clientId: string
+  serviceIds: string[]
+  
+  platform: 'google' | 'facebook'
+  adType: string
+  campaignGoal: string
+  
+  headlines?: string[]
+  descriptions?: string[]
+  adCopy?: {
+    primary: string
+    secondary?: string
+    callToAction: string
+  }
+  
+  createdAt: Date
+  isActive: boolean
+  performance?: {
+    impressions?: number
+    clicks?: number
+    conversions?: number
+    ctr?: number
+    cost?: number
+  }
 } 

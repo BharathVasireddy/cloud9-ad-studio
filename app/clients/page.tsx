@@ -1,408 +1,280 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card, CardHeader, CardContent } from '../../components/ui/Card'
 import { Button } from '../../components/ui/Button'
 import Header from '../../components/layout/Header'
+import ClientForm from '../../components/forms/ClientForm'
+import { useClient } from '../../contexts/ClientContext'
+import { useAuth } from '../../contexts/AuthContext'
+import { CreateClientData, UpdateClientData } from '../../types/client'
 import { 
   Search, 
   Plus, 
-  Building2, 
-  Mail, 
-  Phone, 
   Globe, 
-  BarChart3,
-  Calendar,
+  MapPin,
+  Package,
+  Loader2,
   Edit,
-  Trash2,
-  ExternalLink,
-  Users,
-  TrendingUp
+  Trash2
 } from 'lucide-react'
 
-interface Client {
-  id: number
-  name: string
-  email: string
-  phone?: string
-  website?: string
-  industry: string
-  createdAt: string
-  totalCampaigns: number
-  activeCampaigns: number
-  totalSpend: number
-  avgCTR: number
-  status: 'active' | 'inactive' | 'pending'
-}
-
 export default function ClientsPage() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedIndustry, setSelectedIndustry] = useState<string>('all')
-  const [selectedStatus, setSelectedStatus] = useState<string>('all')
-  const [showAddClient, setShowAddClient] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [showForm, setShowForm] = useState(false)
+  const [editingClient, setEditingClient] = useState<string | null>(null)
+  
+  const { 
+    clients, 
+    loading, 
+    error, 
+    createClient, 
+    updateClient, 
+    deleteClient
+  } = useClient()
+  
+  const { user } = useAuth()
 
-  // Mock client data
-  const clients: Client[] = [
-    {
-      id: 1,
-      name: 'Tech Startup Inc.',
-      email: 'contact@techstartup.com',
-      phone: '+1 (555) 123-4567',
-      website: 'https://techstartup.com',
-      industry: 'Technology',
-      createdAt: '2024-01-10T09:00:00Z',
-      totalCampaigns: 8,
-      activeCampaigns: 3,
-      totalSpend: 15420,
-      avgCTR: 5.78,
-      status: 'active'
-    },
-    {
-      id: 2,
-      name: 'E-commerce Store',
-      email: 'marketing@ecomstore.com',
-      phone: '+1 (555) 987-6543',
-      website: 'https://ecomstore.com',
-      industry: 'E-commerce',
-      createdAt: '2024-01-08T14:30:00Z',
-      totalCampaigns: 12,
-      activeCampaigns: 5,
-      totalSpend: 28930,
-      avgCTR: 4.92,
-      status: 'active'
-    },
-    {
-      id: 3,
-      name: 'Local Restaurant',
-      email: 'info@localrestaurant.com',
-      phone: '+1 (555) 456-7890',
-      industry: 'Food & Beverage',
-      createdAt: '2024-01-05T11:15:00Z',
-      totalCampaigns: 4,
-      activeCampaigns: 2,
-      totalSpend: 3240,
-      avgCTR: 7.22,
-      status: 'active'
-    },
-    {
-      id: 4,
-      name: 'Fitness Studio Pro',
-      email: 'contact@fitnesspro.com',
-      phone: '+1 (555) 321-9876',
-      website: 'https://fitnesspro.com',
-      industry: 'Health & Fitness',
-      createdAt: '2024-01-03T16:45:00Z',
-      totalCampaigns: 6,
-      activeCampaigns: 1,
-      totalSpend: 12100,
-      avgCTR: 8.16,
-      status: 'active'
-    },
-    {
-      id: 5,
-      name: 'Design Agency Co.',
-      email: 'hello@designagency.co',
-      industry: 'Design & Creative',
-      createdAt: '2023-12-28T10:20:00Z',
-      totalCampaigns: 2,
-      activeCampaigns: 0,
-      totalSpend: 850,
-      avgCTR: 3.45,
-      status: 'inactive'
+  // Filter clients based on search term
+  const filteredClients = clients.filter(client =>
+    client.businessName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.website?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.industry?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  const extractDomain = (url?: string) => {
+    if (!url) return null
+    try {
+      return new URL(url.startsWith('http') ? url : `https://${url}`).hostname
+    } catch {
+      return url
     }
-  ]
+  }
 
-  const industries = Array.from(new Set(clients.map(c => c.industry)))
+  const handleCreateClient = async (data: CreateClientData) => {
+    try {
+      await createClient(data)
+      setShowForm(false)
+    } catch (error) {
+      console.error('Failed to create client:', error)
+    }
+  }
 
-  const filteredClients = clients.filter(client => {
-    const matchesSearch = client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         client.industry.toLowerCase().includes(searchQuery.toLowerCase())
+  const handleUpdateClient = async (data: UpdateClientData) => {
+    if (!editingClient) return
     
-    const matchesIndustry = selectedIndustry === 'all' || client.industry === selectedIndustry
-    const matchesStatus = selectedStatus === 'all' || client.status === selectedStatus
-
-    return matchesSearch && matchesIndustry && matchesStatus
-  })
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric',
-      year: 'numeric'
-    })
-  }
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount)
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-green-500/20 text-green-400'
-      case 'inactive': return 'bg-gray-500/20 text-gray-400'
-      case 'pending': return 'bg-yellow-500/20 text-yellow-400'
-      default: return 'bg-gray-500/20 text-gray-400'
+    try {
+      await updateClient(editingClient, data)
+      setEditingClient(null)
+      setShowForm(false)
+    } catch (error) {
+      console.error('Failed to update client:', error)
     }
   }
 
-  const totalStats = {
-    totalClients: clients.length,
-    activeClients: clients.filter(c => c.status === 'active').length,
-    totalSpend: clients.reduce((sum, c) => sum + c.totalSpend, 0),
-    avgCTR: clients.reduce((sum, c) => sum + c.avgCTR, 0) / clients.length
+  const getEditingClientData = () => {
+    if (!editingClient) return undefined
+    return clients.find(client => client.id === editingClient)
+  }
+
+  const handleDeleteClient = async (clientId: string) => {
+    if (!confirm('Are you sure you want to delete this client?')) return
+    
+    try {
+      await deleteClient(clientId)
+    } catch (error) {
+      console.error('Failed to delete client:', error)
+    }
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-black text-white">
+        <Header />
+        <div className="container mx-auto px-4 py-8 text-center">
+          <h1 className="text-2xl font-bold mb-4">Please sign in to manage clients</h1>
+        </div>
+      </div>
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center">
+            <Loader2 className="w-8 h-8 animate-spin mr-3" />
+            <span>Loading clients...</span>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans']">
+    <div className="min-h-screen bg-black text-white">
       <Header />
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page Header */}
-        <div className="flex items-center justify-between mb-8">
+      
+      <div className="container mx-auto px-4 py-8">
+        {/* Page Header with Search */}
+        <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Client Management</h1>
-            <p className="text-gray-400">Organize and manage your advertising clients</p>
+            <h1 className="text-3xl font-bold mb-2">Client Management</h1>
+            <p className="text-gray-400">Manage your clients and their services</p>
           </div>
-          <Button 
-            variant="primary" 
-            onClick={() => setShowAddClient(true)}
-            className="flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add Client
-          </Button>
-        </div>
-
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="card-gradient">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm">Total Clients</p>
-                  <p className="text-2xl font-bold text-white">{totalStats.totalClients}</p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-blue-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="card-gradient">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm">Active Clients</p>
-                  <p className="text-2xl font-bold text-white">{totalStats.activeClients}</p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/30 flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-green-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="card-gradient">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm">Total Ad Spend</p>
-                  <p className="text-2xl font-bold text-white">{formatCurrency(totalStats.totalSpend)}</p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30 flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-purple-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="card-gradient">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm">Avg CTR</p>
-                  <p className="text-2xl font-bold text-white">{totalStats.avgCTR.toFixed(2)}%</p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 border border-cyan-500/30 flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-cyan-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Filters */}
-        <Card className="card-gradient mb-8">
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-              {/* Search */}
-              <div className="lg:col-span-6">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search clients by name, email, or industry..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              {/* Industry Filter */}
-              <div className="lg:col-span-3">
-                <select
-                  value={selectedIndustry}
-                  onChange={(e) => setSelectedIndustry(e.target.value)}
-                  className="w-full py-2 px-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="all">All Industries</option>
-                  {industries.map(industry => (
-                    <option key={industry} value={industry}>{industry}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Status Filter */}
-              <div className="lg:col-span-3">
-                <select
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full py-2 px-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="all">All Status</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="pending">Pending</option>
-                </select>
-              </div>
+          
+          <div className="flex items-center gap-4">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search clients..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+              />
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Results Counter */}
-        <div className="mb-6">
-          <p className="text-gray-400">
-            Showing {filteredClients.length} of {clients.length} clients
-          </p>
+            
+            <Button
+              onClick={() => {
+                setEditingClient(null)
+                setShowForm(true)
+              }}
+              className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Add Client
+            </Button>
+          </div>
         </div>
 
-        {/* Client Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredClients.length > 0 ? (
-            filteredClients.map((client) => (
-              <Card key={client.id} className="card-gradient hover:border-gray-600 transition-colors">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4 gap-4">
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-500/30 flex items-center justify-center flex-shrink-0">
-                        <Building2 className="w-6 h-6 text-blue-400" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-lg font-semibold text-white truncate">{client.name}</h3>
-                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(client.status)}`}>
-                          {client.status}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <Button variant="outline" size="sm">
-                        <Edit className="w-3 h-3" />
-                      </Button>
-                      <Button variant="outline" size="sm" className="text-red-400 hover:text-red-300">
-                        <Trash2 className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  </div>
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-900/50 border border-red-500 rounded-lg p-4 mb-6">
+            <p className="text-red-400">Error: {error}</p>
+          </div>
+        )}
 
-                  <div className="space-y-3 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                      <Mail className="w-4 h-4" />
-                      <span>{client.email}</span>
-                    </div>
-                    {client.phone && (
-                      <div className="flex items-center gap-2 text-sm text-gray-400">
-                        <Phone className="w-4 h-4" />
-                        <span>{client.phone}</span>
-                      </div>
+        {/* Clients Grid */}
+        {filteredClients.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
+              <Package className="w-10 h-10 text-gray-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-300 mb-2">
+              {searchTerm ? 'No clients found' : 'No clients yet'}
+            </h3>
+            <p className="text-gray-500 mb-6">
+              {searchTerm 
+                ? 'Try adjusting your search terms' 
+                : 'Add your first client to get started'
+              }
+            </p>
+            {!searchTerm && (
+              <Button
+                onClick={() => setShowForm(true)}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Your First Client
+              </Button>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredClients.map((client) => (
+              <div
+                key={client.id}
+                className="bg-gray-900 border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-colors duration-200 group"
+              >
+                {/* Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-lg font-semibold text-white truncate mb-1">
+                      {client.businessName}
+                    </h3>
+                    {client.industry && (
+                      <p className="text-sm text-gray-400">
+                        {client.industry}
+                      </p>
                     )}
-                    {client.website && (
-                      <div className="flex items-center gap-2 text-sm text-gray-400">
-                        <Globe className="w-4 h-4" />
-                        <a href={client.website} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                          {client.website.replace('https://', '')}
-                        </a>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                      <Building2 className="w-4 h-4" />
-                      <span>{client.industry}</span>
-                    </div>
                   </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-4 pt-4 border-t border-gray-800">
-                    <div>
-                      <p className="text-xs text-gray-400">Total Campaigns</p>
-                      <p className="text-lg font-semibold text-white">{client.totalCampaigns}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-400">Active Campaigns</p>
-                      <p className="text-lg font-semibold text-green-400">{client.activeCampaigns}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-400">Total Spend</p>
-                      <p className="text-lg font-semibold text-white">{formatCurrency(client.totalSpend)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-400">Avg CTR</p>
-                      <p className="text-lg font-semibold text-cyan-400">{client.avgCTR}%</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-800">
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Calendar className="w-3 h-3" />
-                      <span>Added {formatDate(client.createdAt)}</span>
-                    </div>
-                    <Button variant="outline" size="sm">
-                      <ExternalLink className="w-3 h-3" />
-                      View Details
+                  
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                    <Button
+                      onClick={() => {
+                        setEditingClient(client.id)
+                        setShowForm(true)
+                      }}
+                      variant="secondary"
+                      size="sm"
+                      className="bg-gray-800 hover:bg-gray-700 border-gray-700 p-1.5"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                    </Button>
+                    <Button
+                      onClick={() => handleDeleteClient(client.id)}
+                      variant="secondary"
+                      size="sm"
+                      className="bg-gray-800 hover:bg-red-600 border-gray-700 p-1.5"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <div className="col-span-full">
-              <Card className="card-gradient">
-                <CardContent className="flex flex-col items-center justify-center py-12 px-6">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6">
-                    <Users className="w-10 h-10 text-blue-400" />
+                </div>
+
+                {/* Content */}
+                <div className="space-y-3">
+                  {/* City */}
+                  {client.city && (
+                    <div className="flex items-center gap-2 text-gray-300">
+                      <MapPin className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm">{client.city}</span>
+                    </div>
+                  )}
+
+                  {/* Website */}
+                  {client.website && (
+                    <div className="flex items-center gap-2 text-gray-300">
+                      <Globe className="w-4 h-4 text-gray-500" />
+                      <a
+                        href={client.website.startsWith('http') ? client.website : `https://${client.website}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-400 hover:text-blue-300 truncate"
+                      >
+                        {extractDomain(client.website)}
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Services */}
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <Package className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm">
+                      {client.services.length} service{client.services.length !== 1 ? 's' : ''}
+                    </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">No clients found</h3>
-                  <p className="text-gray-400 mb-6 text-center max-w-md">
-                    {searchQuery || selectedIndustry !== 'all' || selectedStatus !== 'all'
-                      ? 'No clients match your current filters. Try adjusting your search criteria.'
-                      : 'You haven\'t added any clients yet. Add your first client to get started.'
-                    }
-                  </p>
-                  <Button variant="primary" onClick={() => setShowAddClient(true)}>
-                    Add Your First Client
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-        </div>
-      </main>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Client Form Modal */}
+        <ClientForm
+          isOpen={showForm}
+          onClose={() => {
+            setShowForm(false)
+            setEditingClient(null)
+          }}
+          onSubmit={editingClient ? handleUpdateClient : handleCreateClient}
+          initialData={getEditingClientData()}
+          isEditing={!!editingClient}
+        />
+      </div>
     </div>
   )
 } 

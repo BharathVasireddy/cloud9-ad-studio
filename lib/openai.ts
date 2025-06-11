@@ -25,6 +25,17 @@ export interface GoogleAdsGenerationRequest {
   keywords?: string[]
   tone?: 'professional' | 'casual' | 'friendly' | 'authoritative' | 'playful'
   industry?: string
+  // Enhanced client-specific data
+  clientData?: {
+    city?: string
+    website?: string
+    services?: Array<{
+      name: string
+      description: string
+      category: string
+      url?: string
+    }>
+  }
 }
 
 export interface GoogleAdsGenerationResponse {
@@ -47,17 +58,45 @@ export async function generateGoogleAds(
   const { headline: headlineLimit, description: descLimit } = PLATFORM_LIMITS.google
   const tone = request.tone || 'professional'
   
-  const systemPrompt = `You are an expert Google Ads copywriter specialized in creating high-converting ad copy that complies with Google Ads policies.
+  // Build enhanced context from client data
+  const clientContext = buildClientContext(request.clientData)
+  
+  const systemPrompt = `You are an expert Google Ads copywriter specialized in creating high-converting ad copy using proven frameworks.
 
-CRITICAL RULES:
+GOOGLE ADS COMPLIANCE RULES:
 1. Headlines: Maximum ${headlineLimit.maxLength} characters each (including spaces)
 2. Descriptions: Maximum ${descLimit.maxLength} characters each (including spaces)
 3. NO exclamation marks (!) allowed anywhere
 4. NO ALL CAPS words
 5. NO misleading claims or superlatives without proof
-6. Must be relevant to the business and target audience
-7. Focus on benefits, not just features
-8. Include clear value propositions
+6. Character limits are STRICT - exceed them and ads get rejected
+
+COPYWRITING FRAMEWORKS TO USE:
+
+AIDA Framework:
+- Grab attention with bold promise or shock
+- Spark interest focusing on one pain point
+- Build desire with 2-3 key benefits in "you" language
+- Drive action with direct call to action
+
+PAS Framework:
+- State the problem (what holds audience back)
+- Agitate it (highlight impact on day/budget)
+- Present solution (show how offer fixes it fast)
+
+HOOK-BENEFIT-PROOF-CTA:
+- Hook (1 short line)
+- Core benefit (you-focused, one sentence)
+- Proof (testimonial or statistic if available)
+- CTA (single, urgent command)
+
+WRITING RULES:
+- Write every line readable at a glance
+- Break copy into 3-4 lines max
+- Use one idea per line
+- Keep verbs strong, promises real
+- Use "you" language for benefits
+- End with clickable action reader can't ignore
 
 TONE: ${tone}
 RESPOND IN VALID JSON FORMAT ONLY.`
@@ -71,6 +110,15 @@ Key Features: ${request.keyFeatures.join(', ')}
 Call to Action: ${request.callToAction}
 ${request.keywords ? `Keywords to include: ${request.keywords.join(', ')}` : ''}
 ${request.industry ? `Industry: ${request.industry}` : ''}
+
+${clientContext}
+
+OPTIMIZATION GUIDELINES:
+- Use location-specific targeting when city is provided
+- Highlight service categories and specific benefits
+- Include industry-specific pain points and solutions
+- Create urgency without using exclamation marks
+- Focus on ROI and business outcomes
 
 Generate ${headlineLimit.maxCount} headlines (max ${headlineLimit.maxLength} chars each) and ${descLimit.maxCount} descriptions (max ${descLimit.maxLength} chars each).
 
@@ -119,6 +167,39 @@ Return JSON format:
     
     throw new Error(`Ad generation failed: ${error.message}`)
   }
+}
+
+/**
+ * Build enhanced context from client data
+ */
+function buildClientContext(clientData?: GoogleAdsGenerationRequest['clientData']): string {
+  if (!clientData) return ''
+  
+  let context = '\nCLIENT-SPECIFIC CONTEXT:\n'
+  
+  if (clientData.city) {
+    context += `Location: ${clientData.city} (use for local targeting)\n`
+  }
+  
+  if (clientData.website) {
+    context += `Website: ${clientData.website}\n`
+  }
+  
+  if (clientData.services && clientData.services.length > 0) {
+    context += `Services Offered:\n`
+    clientData.services.forEach((service, index) => {
+      context += `${index + 1}. ${service.name} (${service.category}): ${service.description}\n`
+      if (service.url) {
+        context += `   Service URL: ${service.url}\n`
+      }
+    })
+    
+    // Extract service categories for targeting
+    const categories = [...new Set(clientData.services.map(s => s.category))]
+    context += `Service Categories: ${categories.join(', ')}\n`
+  }
+  
+  return context
 }
 
 /**
@@ -185,10 +266,22 @@ export interface FacebookAdsGenerationRequest {
   businessName: string
   businessDescription: string
   targetAudience: string
-  objective: 'awareness' | 'traffic' | 'engagement' | 'leads' | 'sales'
+  objective: 'awareness' | 'traffic' | 'engagement' | 'leads' | 'sales' | 'conversions'
   keyFeatures: string[]
   callToAction: string
-  tone?: 'professional' | 'casual' | 'friendly' | 'authoritative' | 'playful'
+  tone?: 'professional' | 'casual' | 'friendly' | 'authoritative' | 'playful' | 'engaging'
+  industry?: string
+  // Enhanced client-specific data
+  clientData?: {
+    city?: string
+    website?: string
+    services?: Array<{
+      name: string
+      description: string
+      category: string
+      url?: string
+    }>
+  }
 }
 
 export interface FacebookAdsGenerationResponse {
@@ -211,21 +304,50 @@ export async function generateFacebookAds(
   const { headline: headlineLimit, description: descLimit } = PLATFORM_LIMITS.facebook
   const tone = request.tone || 'professional'
   
-  const systemPrompt = `You are an expert Facebook Ads copywriter specialized in creating engaging, scroll-stopping ad copy.
+  const systemPrompt = `You are an expert Facebook Ads copywriter specialized in creating engaging, scroll-stopping ad copy using proven frameworks.
 
 FACEBOOK ADS RULES:
 1. Headlines: Maximum ${headlineLimit.maxLength} characters each
 2. Descriptions: Maximum ${descLimit.maxLength} characters each  
 3. More conversational than Google Ads
-4. Can use emojis sparingly
+4. Can use emojis sparingly (max 1-2 per ad)
 5. Focus on emotional connection
 6. Use social proof when possible
-7. Address pain points directly
+
+COPYWRITING FRAMEWORKS TO USE:
+
+AIDA Framework:
+- Grab attention with bold promise or shock
+- Spark interest focusing on one pain point
+- Build desire with 2-3 key benefits in "you" language
+- Drive action with direct call to action
+
+PAS Framework:
+- State the problem (what holds audience back)
+- Agitate it (highlight impact on day/budget)
+- Present solution (show how offer fixes it fast)
+
+HOOK-BENEFIT-PROOF-CTA:
+- Hook (1 short line that stops scroll)
+- Core benefit (you-focused, one sentence)
+- Proof (testimonial, statistic, or social proof)
+- CTA (single, urgent command)
+
+WRITING RULES:
+- Write every line readable at a glance
+- Break copy into 3-4 lines max
+- Use one idea per line
+- Keep verbs strong, promises real
+- Use "you" language for benefits
+- Create emotional connection
+- End with clickable action reader can't ignore
 
 TONE: ${tone}
 OBJECTIVE: ${request.objective}
 RESPOND IN VALID JSON FORMAT ONLY.`
 
+  const clientContext = buildClientContext(request.clientData)
+  
   const userPrompt = `Generate Facebook Ads copy for:
 
 Business: ${request.businessName}
@@ -234,6 +356,14 @@ Target Audience: ${request.targetAudience}
 Campaign Objective: ${request.objective}
 Key Features: ${request.keyFeatures.join(', ')}
 Call to Action: ${request.callToAction}
+${request.industry ? `Industry: ${request.industry}` : ''}${clientContext}
+
+OPTIMIZATION GUIDELINES:
+- Use location-specific messaging if city is provided
+- Highlight service-specific benefits
+- Address common industry pain points
+- Create emotional connection with target audience
+- Use social proof language ("trusted by", "helping businesses")
 
 Generate ${headlineLimit.maxCount} headlines (max ${headlineLimit.maxLength} chars each) and ${descLimit.maxCount} descriptions (max ${descLimit.maxLength} chars each).
 
