@@ -3,12 +3,14 @@ import { User as FirebaseUser } from 'firebase/auth'
 /**
  * Extended user interface combining Firebase User with app-specific data
  */
-export interface User extends Omit<FirebaseUser, 'metadata'> {
+export interface User {
   id: string
+  uid: string
   email: string
-  displayName?: string
-  phoneNumber?: string
-  photoURL?: string
+  displayName?: string | null
+  phoneNumber?: string | null
+  photoURL?: string | null
+  emailVerified?: boolean
   createdAt: Date
   updatedAt: Date
   role: 'user' | 'admin'
@@ -66,9 +68,9 @@ export type AuthError = {
 export interface CreateUserData {
   uid: string
   email: string
-  displayName?: string
-  phoneNumber?: string
-  photoURL?: string
+  displayName?: string | null
+  phoneNumber?: string | null
+  photoURL?: string | null
   role: 'user' | 'admin'
   preferences: UserPreferences
   createdAt: Date
