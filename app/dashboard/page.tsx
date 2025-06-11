@@ -157,12 +157,12 @@ export default function DashboardPage() {
                   }
                 </p>
                 {!searchQuery && (
-                  <Link href="/generate" className="inline-block">
-                    <Button variant="primary" className="flex-shrink-0 px-4 sm:px-6 py-3 font-semibold whitespace-nowrap min-w-0">
-                      <Sparkles className="w-4 h-4 mr-2 flex-shrink-0" />
-                      <span className="text-sm sm:text-base font-medium">Create Your First Campaign</span>
-                    </Button>
-                  </Link>
+                                <Link href="/generate" className="inline-block">
+                <Button variant="primary" className="flex-shrink-0 px-4 sm:px-6 py-3 font-semibold">
+                  <Sparkles className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span className="text-sm sm:text-base font-medium">Create Your First Campaign</span>
+                </Button>
+              </Link>
                 )}
               </div>
             )}

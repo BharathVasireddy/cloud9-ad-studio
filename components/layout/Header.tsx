@@ -57,14 +57,14 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-1">
             <Link 
               href="/generate"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors whitespace-nowrap"
             >
               <Plus className="w-4 h-4" />
               Generate
             </Link>
             <Link 
               href="/history"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors whitespace-nowrap"
             >
               <Clock className="w-4 h-4" />
               History
