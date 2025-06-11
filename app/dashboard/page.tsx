@@ -20,7 +20,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans']">
       {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900/50">
+      <header className="border-b border-gray-800 bg-gray-900/50 sticky top-0 z-50 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -35,17 +35,18 @@ export default function DashboardPage() {
 
             {/* User Menu */}
             <div className="flex items-center gap-4">
-              <span className="text-gray-400 text-sm">
+              <span className="text-gray-400 text-sm hidden sm:block">
                 Welcome, {user?.displayName || user?.email}
               </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleSignOut}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 whitespace-nowrap"
               >
                 <LogOut className="w-4 h-4" />
-                Sign Out
+                <span className="hidden sm:inline">Sign Out</span>
+                <span className="sm:hidden">Exit</span>
               </Button>
             </div>
           </div>
@@ -65,7 +66,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <Card className="card-gradient hover-lift">
             <CardHeader>
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-4">
@@ -102,17 +103,17 @@ export default function DashboardPage() {
 
           <Card className="card-gradient hover-lift">
             <CardHeader>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-4">
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-white">Analytics</h3>
+              <h3 className="text-xl font-semibold text-white">Generation History</h3>
               <p className="text-gray-400">
-                Track performance and optimization insights
+                View and reuse your previous ad copy generations
               </p>
             </CardHeader>
             <CardContent>
               <Button variant="outline" className="w-full">
-                View Reports
+                View History
               </Button>
             </CardContent>
           </Card>
@@ -122,15 +123,19 @@ export default function DashboardPage() {
         <Card className="card-gradient">
           <CardHeader>
             <h3 className="text-xl font-semibold text-white mb-2">Recent Activity</h3>
-            <p className="text-gray-400">Your latest ad generation sessions</p>
+            <p className="text-gray-400">Your latest ad copy generations and campaigns</p>
           </CardHeader>
           <CardContent>
-            <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-8 h-8 text-gray-500" />
+            <div className="flex flex-col items-center justify-center py-12 px-6">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6">
+                <Sparkles className="w-10 h-10 text-blue-400" />
               </div>
-              <p className="text-gray-400 mb-4">No campaigns yet</p>
-              <Button variant="primary">
+              <h4 className="text-lg font-semibold text-white mb-2">Ready to Create Amazing Ads?</h4>
+              <p className="text-gray-400 mb-6 text-center max-w-md">
+                Generate high-converting ad copy for Google and Facebook with AI assistance. Your campaigns will appear here once you get started.
+              </p>
+              <Button variant="primary" className="min-w-[200px]">
+                <Plus className="w-4 h-4 mr-2" />
                 Create Your First Campaign
               </Button>
             </div>
