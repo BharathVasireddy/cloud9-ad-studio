@@ -301,19 +301,19 @@ export default function ClientsPage() {
             filteredClients.map((client) => (
               <Card key={client.id} className="card-gradient hover:border-gray-600 transition-colors">
                 <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-500/30 flex items-center justify-center">
+                  <div className="flex items-start justify-between mb-4 gap-4">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-500/30 flex items-center justify-center flex-shrink-0">
                         <Building2 className="w-6 h-6 text-blue-400" />
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-white">{client.name}</h3>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-lg font-semibold text-white truncate">{client.name}</h3>
                         <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(client.status)}`}>
                           {client.status}
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                       <Button variant="outline" size="sm">
                         <Edit className="w-3 h-3" />
                       </Button>
@@ -372,7 +372,7 @@ export default function ClientsPage() {
                       <Calendar className="w-3 h-3" />
                       <span>Added {formatDate(client.createdAt)}</span>
                     </div>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Button variant="outline" size="sm">
                       <ExternalLink className="w-3 h-3" />
                       View Details
                     </Button>

@@ -265,7 +265,7 @@ export default function HistoryPage() {
                 <Button
                   onClick={exportToCSV}
                   variant="outline"
-                  className="w-full flex items-center gap-2"
+                  className="w-full"
                 >
                   <Download className="w-4 h-4" />
                   Export CSV
@@ -288,34 +288,33 @@ export default function HistoryPage() {
             filteredHistory.map((generation) => (
               <Card key={generation.id} className="card-gradient hover:border-gray-600 transition-colors">
                 <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
+                  <div className="flex items-start justify-between mb-4 gap-4">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                       {getPlatformIcon(generation.platform)}
-                      <div>
-                        <h3 className="text-lg font-semibold text-white">{generation.campaign}</h3>
-                        <div className="flex items-center gap-3 text-sm text-gray-400">
-                          <span>{generation.client}</span>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-lg font-semibold text-white truncate">{generation.campaign}</h3>
+                        <div className="flex items-center gap-3 text-sm text-gray-400 flex-wrap">
+                          <span className="truncate">{generation.client}</span>
                           <span>•</span>
-                          <span>{generation.platform}</span>
+                          <span className="truncate">{generation.platform}</span>
                           <span>•</span>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 flex-shrink-0">
                             {getStatusIcon(generation.status)}
                             <span className="capitalize">{generation.status}</span>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                       <Button
                         onClick={() => handleCopyContent(generation)}
                         variant="outline"
                         size="sm"
-                        className="flex items-center gap-2"
                       >
                         <Copy className="w-3 h-3" />
                         {copiedId === generation.id ? 'Copied!' : 'Copy'}
                       </Button>
-                      <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <Button variant="outline" size="sm">
                         <ExternalLink className="w-3 h-3" />
                         View
                       </Button>
