@@ -1,0 +1,99 @@
+# Ad Studio by Cloud 9 Digital - Cursor Rules
+
+## Project Overview
+Internal tool for generating Google and Facebook ad copy with Firebase backend and Next.js frontend.
+
+## CRITICAL: DO NOT CHANGE EXISTING FUNCTIONALITY
+- NEVER remove or break existing working features
+- NEVER rewrite entire components unless explicitly requested
+- ALWAYS build incrementally on existing code
+- PRESERVE all existing imports, state management, and component structure
+
+## Tech Stack Requirements
+- **Framework**: Next.js 14+ with App Router
+- **Styling**: Tailwind CSS ONLY (no custom CSS files)
+- **Font**: Plus Jakarta Sans (mandatory)
+- **Backend**: Firebase (Auth, Firestore, Cloud Functions)
+- **State**: React Context + useState/useEffect
+- **Icons**: Lucide React
+
+## Design System (MUST FOLLOW)
+- **Theme**: Black background (#000000) with white text
+- **Colors**: Use CSS custom properties (--color-*) NEVER hardcode colors
+- **Effects**: AI-style glow effects on interactive elements
+- **Typography**: Plus Jakarta Sans font family
+- **Components**: Use established components from components/ui/
+
+## Google Ads Compliance (MANDATORY)
+- Headlines: Max 15, each ≤30 characters (including spaces)
+- Descriptions: Max 4, each ≤90 characters (including spaces)
+- NO exclamation marks (!) in any ad copy
+- Real-time character counting required
+
+## File Structure (MUST MAINTAIN)
+```
+/components
+  /ui (reusable components)
+  /forms (form components)
+  /layout (layout components)
+/pages or /app (Next.js pages)
+/contexts (React contexts)
+/hooks (custom hooks)
+/utils (utility functions)
+/lib (Firebase config, etc.)
+```
+
+## Coding Standards
+- **Naming**: PascalCase for components, camelCase for variables
+- **Imports**: React first, Firebase second, components third
+- **Error Handling**: ALWAYS include try/catch and loading states
+- **Comments**: JSDoc comments on all functions
+- **TypeScript**: Use TypeScript for all new files
+
+## Component Requirements
+- ALWAYS include error handling
+- ALWAYS include loading states
+- ALWAYS include accessibility attributes
+- Use established CSS classes from design system
+- Include prop validation
+
+## Firebase Requirements
+- Use Firebase v9+ modular SDK
+- Implement proper error handling
+- Use Firestore security rules
+- Implement offline persistence
+
+## AI Copy Generation
+- Integrate OpenAI API or similar
+- Include prompt engineering for Google Ads compliance
+- Validate generated content against character limits
+- Provide regeneration options
+
+## Authentication
+- Multi-user support with user isolation
+- Each user has their own clients and generation history
+- Secure session management
+
+## Development Process
+- Follow 15-step development approach
+- Test each feature before moving to next
+- Maintain backward compatibility
+- Document all major changes
+
+## What NOT to do
+- DON'T use custom CSS files
+- DON'T hardcode colors or fonts
+- DON'T create components from scratch if similar exists
+- DON'T change working functionality without explicit request
+- DON'T add unnecessary dependencies
+- DON't remove error handling or validation
+- DON'T break Google Ads compliance rules
+
+## AI Assistant Instructions
+- ALWAYS reference DESIGN_SYSTEM.md before creating UI
+- ALWAYS check existing components before creating new ones
+- ALWAYS follow the established patterns
+- ALWAYS include error handling and loading states
+- ALWAYS validate Google Ads compliance
+- NEVER remove working functionality
+- NEVER change the entire codebase at once 
