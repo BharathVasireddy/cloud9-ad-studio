@@ -2,8 +2,9 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useAuth } from '../../hooks/useAuth'
-import { Sparkles, User, LogOut, Settings, ChevronDown } from 'lucide-react'
+import { Sparkles, User, LogOut, Settings, ChevronDown, Plus, Clock, Users } from 'lucide-react'
 
 interface HeaderProps {}
 
@@ -43,7 +44,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Left Side - Logo */}
-          <div className="flex items-center gap-2 min-w-0 flex-1">
+          <div className="flex items-center gap-2 min-w-0">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
@@ -51,6 +52,24 @@ export default function Header() {
               <span className="text-gradient-animated">Ad Studio</span>
             </h1>
           </div>
+
+          {/* Center - Navigation Menu */}
+          <nav className="hidden md:flex items-center gap-1">
+            <Link 
+              href="/generate"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Generate
+            </Link>
+            <Link 
+              href="/history"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors"
+            >
+              <Clock className="w-4 h-4" />
+              History
+            </Link>
+          </nav>
 
           {/* Right Side - User Dropdown */}
           <div className="relative flex-shrink-0" ref={dropdownRef}>
@@ -84,6 +103,16 @@ export default function Header() {
                   </p>
                 </div>
                 <div className="py-2">
+                  <button
+                    onClick={() => {
+                      setIsDropdownOpen(false)
+                      router.push('/clients')
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2"
+                  >
+                    <Users className="w-4 h-4" />
+                    Clients
+                  </button>
                   <button
                     onClick={() => {
                       setIsDropdownOpen(false)
