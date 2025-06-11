@@ -270,7 +270,13 @@ export default function ClientsPage() {
             setShowForm(false)
             setEditingClient(null)
           }}
-          onSubmit={editingClient ? handleUpdateClient : handleCreateClient}
+          onSubmit={async (data: CreateClientData) => {
+            if (editingClient) {
+              await handleUpdateClient(data as UpdateClientData)
+            } else {
+              await handleCreateClient(data)
+            }
+          }}
           initialData={getEditingClientData()}
           isEditing={!!editingClient}
         />

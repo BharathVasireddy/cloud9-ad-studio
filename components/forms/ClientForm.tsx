@@ -16,7 +16,7 @@ import {
 interface ClientFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: CreateClientData | UpdateClientData) => Promise<void>;
+  onSubmit: (data: CreateClientData) => Promise<void>;
   initialData?: UpdateClientData;
   isEditing?: boolean;
 }

@@ -124,16 +124,7 @@ function generateCallToAction(service: any): string {
   return ctas[0] // Default
 }
 
-function generateObjective(service: any): string {
-  // Facebook campaign objectives
-  const objectives = [
-    'traffic',
-    'conversions', 
-    'leads',
-    'engagement',
-    'reach'
-  ]
-  
+function generateObjective(service: any): 'awareness' | 'traffic' | 'engagement' | 'leads' | 'sales' | 'conversions' {
   // Service-specific objectives
   if (service.category === 'consulting') return 'leads'
   if (service.category === 'service') return 'conversions'

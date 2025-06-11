@@ -146,6 +146,18 @@ export const PLATFORM_LIMITS = {
 } as const
 
 /**
+ * Generation constraints interface
+ */
+export interface GenerationConstraints {
+  maxHeadlines: number
+  maxDescriptions: number
+  tone: string
+  includeKeywords: string[]
+  avoidWords: string[]
+  emphasizeFeatures: string[]
+}
+
+/**
  * Default generation constraints
  */
 export const DEFAULT_GENERATION_CONSTRAINTS: GenerationConstraints = {

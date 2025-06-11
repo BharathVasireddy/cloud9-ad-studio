@@ -195,7 +195,7 @@ function buildClientContext(clientData?: GoogleAdsGenerationRequest['clientData'
     })
     
     // Extract service categories for targeting
-    const categories = [...new Set(clientData.services.map(s => s.category))]
+    const categories = Array.from(new Set(clientData.services.map(s => s.category)))
     context += `Service Categories: ${categories.join(', ')}\n`
   }
   
