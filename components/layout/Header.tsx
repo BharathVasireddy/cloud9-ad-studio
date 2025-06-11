@@ -1,23 +1,13 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
-import { Button } from '../ui/Button'
-import { Sparkles, ArrowLeft, User, LogOut, Settings, ChevronDown } from 'lucide-react'
+import { Sparkles, User, LogOut, Settings, ChevronDown } from 'lucide-react'
 
-interface HeaderProps {
-  showBackButton?: boolean
-  backButtonHref?: string
-  backButtonText?: string
-}
+interface HeaderProps {}
 
-export default function Header({ 
-  showBackButton = false, 
-  backButtonHref = '/dashboard',
-  backButtonText = 'Back'
-}: HeaderProps) {
+export default function Header() {
   const { user, signOut } = useAuth()
   const router = useRouter()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -52,26 +42,14 @@ export default function Header({
     <header className="border-b border-gray-800 bg-gray-900/50 sticky top-0 z-50 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
-          {/* Left Side - Logo/Navigation */}
-          <div className="flex items-center gap-4 min-w-0 flex-1">
-            {showBackButton && (
-              <Link href={backButtonHref} className="flex-shrink-0">
-                <Button variant="outline" size="sm" className="flex items-center gap-2 whitespace-nowrap">
-                  <ArrowLeft className="w-4 h-4 flex-shrink-0" />
-                  <span className="hidden sm:inline">{backButtonText}</span>
-                  <span className="sm:hidden">Back</span>
-                </Button>
-              </Link>
-            )}
-            
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <h1 className="text-lg sm:text-xl font-bold text-white truncate">
-                <span className="text-gradient-animated">Ad Studio</span>
-              </h1>
+          {/* Left Side - Logo */}
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
+            <h1 className="text-lg sm:text-xl font-bold text-white truncate">
+              <span className="text-gradient-animated">Ad Studio</span>
+            </h1>
           </div>
 
           {/* Right Side - User Dropdown */}

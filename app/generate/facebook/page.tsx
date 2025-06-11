@@ -108,11 +108,7 @@ export default function FacebookAdsGeneratePage() {
 
   return (
     <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans']">
-      <Header
-        showBackButton={true}
-        backButtonHref="/generate"
-        backButtonText="Back"
-      />
+      <Header />
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
