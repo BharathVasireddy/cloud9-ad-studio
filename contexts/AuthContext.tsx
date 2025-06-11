@@ -83,6 +83,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       clearError()
       setLoading(true)
 
+      if (!auth) {
+        throw new Error('Firebase authentication is not available. Please check your configuration.')
+      }
+
       // Fast Firebase authentication
       const { user: firebaseUser } = await withTimeout(
         signInWithEmailAndPassword(auth, email, password),
@@ -111,6 +115,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       clearError()
       setLoading(true)
+
+      if (!auth) {
+        throw new Error('Firebase authentication is not available. Please check your configuration.')
+      }
 
       // Create Firebase user
       const { user: firebaseUser } = await withTimeout(
@@ -152,6 +160,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       clearError()
       setLoading(true)
       
+      if (!auth) {
+        throw new Error('Firebase authentication is not available. Please check your configuration.')
+      }
+      
       await firebaseSignOut(auth)
       setUser(null)
     } catch (error: any) {
@@ -169,6 +181,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const resetPassword = async (email: string): Promise<void> => {
     try {
       clearError()
+      
+      if (!auth) {
+        throw new Error('Firebase authentication is not available. Please check your configuration.')
+      }
+      
       await sendPasswordResetEmail(auth, email)
     } catch (error: any) {
       const errorMessage = getAuthErrorMessage(error)
@@ -188,7 +205,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       // Update Firebase profile if needed
       if (updates.displayName || updates.photoURL) {
-        await updateProfile(auth.currentUser!, {
+        if (!auth || !auth.currentUser) {
+          throw new Error('Firebase authentication is not available or user is not signed in.')
+        }
+        
+        await updateProfile(auth.currentUser, {
           displayName: updates.displayName,
           photoURL: updates.photoURL
         })
@@ -210,6 +231,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
    * Listen for authentication state changes
    */
   useEffect(() => {
+    // Don't set up auth listener if Firebase auth is not available
+    if (!auth) {
+      console.warn('Firebase auth is not available. Authentication will not work.')
+      setLoading(false)
+      setUser(null)
+      return
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
         setLoading(true)
