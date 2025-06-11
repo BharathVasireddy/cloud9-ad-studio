@@ -116,7 +116,7 @@ export default function HistoryPage() {
     }
   ]
 
-  const clients = [...new Set(generationHistory.map(g => g.client))]
+  const clients = Array.from(new Set(generationHistory.map(g => g.client)))
 
   const filteredHistory = generationHistory.filter(generation => {
     const matchesSearch = generation.headlines.some(h => h.toLowerCase().includes(searchQuery.toLowerCase())) ||

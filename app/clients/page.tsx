@@ -112,7 +112,7 @@ export default function ClientsPage() {
     }
   ]
 
-  const industries = [...new Set(clients.map(c => c.industry))]
+  const industries = Array.from(new Set(clients.map(c => c.industry)))
 
   const filteredClients = clients.filter(client => {
     const matchesSearch = client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
