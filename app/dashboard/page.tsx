@@ -10,10 +10,7 @@ import { Sparkles, Plus, Users, BarChart3 } from 'lucide-react'
 export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans']">
-      <Header 
-        title="Ad Studio" 
-        subtitle="Create high-converting Google and Facebook ads with AI assistance"
-      />
+      <Header title="Ad Studio" />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

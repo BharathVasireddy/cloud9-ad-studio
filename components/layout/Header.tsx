@@ -1,14 +1,14 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
 import { Button } from '../ui/Button'
-import { Sparkles, LogOut, ArrowLeft } from 'lucide-react'
+import { Sparkles, ArrowLeft, User, LogOut, Settings, ChevronDown } from 'lucide-react'
 
 interface HeaderProps {
   title: string
-  subtitle?: string
   showBackButton?: boolean
   backButtonHref?: string
   backButtonText?: string
@@ -16,21 +16,39 @@ interface HeaderProps {
 
 export default function Header({ 
   title, 
-  subtitle, 
   showBackButton = false, 
   backButtonHref = '/dashboard',
   backButtonText = 'Back to Dashboard'
 }: HeaderProps) {
   const { user, signOut } = useAuth()
+  const router = useRouter()
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   const handleSignOut = async () => {
     try {
+      setIsDropdownOpen(false)
       await signOut()
-      // Navigation will be handled by the auth context
+      // Force clear any cached router data and navigate to home
+      window.location.href = '/'
     } catch (error) {
       console.error('Sign out error:', error)
+      // Even if sign out fails, try to redirect
+      window.location.href = '/'
     }
   }
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   return (
     <header className="border-b border-gray-800 bg-gray-900/50 sticky top-0 z-50 backdrop-blur-md">
@@ -52,42 +70,64 @@ export default function Header({
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <div className="min-w-0">
-                <h1 className="text-lg sm:text-xl font-bold text-white truncate">
-                  <span className="text-gradient-animated">{title}</span>
-                </h1>
-                {subtitle && (
-                  <p className="text-xs sm:text-sm text-gray-400 truncate hidden sm:block">
-                    {subtitle}
-                  </p>
-                )}
-              </div>
+              <h1 className="text-lg sm:text-xl font-bold text-white truncate">
+                <span className="text-gradient-animated">{title}</span>
+              </h1>
             </div>
           </div>
 
-          {/* Right Side - User Menu */}
-          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-            {/* User Info - Hidden on mobile for space */}
-            <div className="hidden lg:flex flex-col items-end min-w-0">
-              <span className="text-sm text-gray-300 truncate max-w-[150px]">
-                {user?.displayName || user?.email?.split('@')[0] || 'User'}
-              </span>
-              <span className="text-xs text-gray-500 truncate max-w-[150px]">
-                {user?.email}
-              </span>
-            </div>
-
-            {/* Sign Out Button */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleSignOut}
-              className="flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 text-sm font-medium flex-shrink-0 min-w-0"
+          {/* Right Side - User Dropdown */}
+          <div className="relative flex-shrink-0" ref={dropdownRef}>
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 transition-colors"
             >
-              <LogOut className="w-4 h-4 flex-shrink-0" />
-              <span className="hidden md:inline">Sign Out</span>
-              <span className="md:hidden">Exit</span>
-            </Button>
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                <User className="w-4 h-4 text-white" />
+              </div>
+              <div className="hidden sm:flex flex-col items-start min-w-0">
+                <span className="text-sm text-white font-medium truncate max-w-[120px]">
+                  {user?.displayName || user?.email?.split('@')[0] || 'User'}
+                </span>
+                <span className="text-xs text-gray-400 truncate max-w-[120px]">
+                  {user?.email}
+                </span>
+              </div>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Dropdown Menu */}
+            {isDropdownOpen && (
+              <div className="absolute right-0 top-full mt-2 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50">
+                <div className="p-3 border-b border-gray-700">
+                  <p className="text-sm font-medium text-white truncate">
+                    {user?.displayName || user?.email?.split('@')[0] || 'User'}
+                  </p>
+                  <p className="text-xs text-gray-400 truncate">
+                    {user?.email}
+                  </p>
+                </div>
+                <div className="py-2">
+                  <button
+                    onClick={() => {
+                      setIsDropdownOpen(false)
+                      // Add profile navigation here when profile page is created
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2"
+                  >
+                    <Settings className="w-4 h-4" />
+                    Profile Settings
+                  </button>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-red-400 flex items-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

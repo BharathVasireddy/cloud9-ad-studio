@@ -110,7 +110,6 @@ export default function FacebookAdsGeneratePage() {
     <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans']">
       <Header
         title="Facebook Ads Generator"
-        subtitle="Create engaging Facebook and Instagram ads"
         showBackButton={true}
         backButtonHref="/generate"
         backButtonText="Back to Generate"

@@ -129,7 +129,6 @@ export default function GoogleAdsGeneratePage() {
     <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans']">
       <Header
         title="Google Ads Generator"
-        subtitle="Generate compliant Google Ads copy with AI assistance"
         showBackButton={true}
         backButtonHref="/generate"
         backButtonText="Back to Generate"

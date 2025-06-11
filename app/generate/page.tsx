@@ -12,7 +12,6 @@ export default function GeneratePage() {
     <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans']">
       <Header
         title="Generate Ad Copy"
-        subtitle="Select the advertising platform to generate optimized ad copy"
         showBackButton={true}
       />
 
