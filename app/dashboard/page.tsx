@@ -34,19 +34,19 @@ export default function DashboardPage() {
             </div>
 
             {/* User Menu */}
-            <div className="flex items-center gap-4">
-              <span className="text-gray-400 text-sm hidden sm:block">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className="text-gray-400 text-sm hidden lg:block truncate max-w-[120px]">
                 Welcome, {user?.displayName || user?.email}
               </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleSignOut}
-                className="flex items-center gap-2 whitespace-nowrap"
+                className="flex-shrink-0 flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 text-sm"
               >
-                <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign Out</span>
-                <span className="sm:hidden">Exit</span>
+                <LogOut className="w-4 h-4 flex-shrink-0" />
+                <span className="hidden md:inline font-medium">Sign Out</span>
+                <span className="md:hidden font-medium">Exit</span>
               </Button>
             </div>
           </div>
@@ -134,9 +134,9 @@ export default function DashboardPage() {
               <p className="text-gray-400 mb-6 text-center max-w-md">
                 Generate high-converting ad copy for Google and Facebook with AI assistance. Your campaigns will appear here once you get started.
               </p>
-              <Button variant="primary" className="min-w-[200px]">
-                <Plus className="w-4 h-4 mr-2" />
-                Create Your First Campaign
+              <Button variant="primary" className="flex-shrink-0 px-6 py-3 font-semibold whitespace-nowrap">
+                <Plus className="w-4 h-4 mr-2 flex-shrink-0" />
+                <span className="text-sm sm:text-base">Create Your First Campaign</span>
               </Button>
             </div>
           </CardContent>

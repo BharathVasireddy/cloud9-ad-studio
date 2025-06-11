@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../hooks/useAuth'
@@ -12,9 +12,16 @@ import { AuthFormData } from '../../../types/auth'
 import { Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react'
 
 export default function SignInPage() {
-  const { signIn, loading, error } = useAuth()
+  const { user, signIn, loading, error } = useAuth()
   const router = useRouter()
   
+  // Redirect to dashboard if already authenticated
+  useEffect(() => {
+    if (user && !loading) {
+      router.replace('/dashboard')
+    }
+  }, [user, loading, router])
+
   const [formData, setFormData] = useState<AuthFormData>({
     email: '',
     password: '',
@@ -69,6 +76,20 @@ export default function SignInPage() {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
+  }
+
+  // Show loading state while checking authentication or redirecting
+  if (loading || user) {
+    return (
+      <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans'] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-400">
+            {user ? 'Redirecting to dashboard...' : 'Loading...'}
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
