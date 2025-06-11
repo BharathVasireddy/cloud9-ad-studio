@@ -168,6 +168,8 @@ button[class*="btn-"] {
   min-width: fit-content !important;
 }
 
+
+
 /* Modern card system */
 .card {
   @apply rounded-2xl overflow-hidden;

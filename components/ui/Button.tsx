@@ -62,9 +62,13 @@ export const Button: React.FC<ButtonProps> = ({
       {loading && (
         <div className="loading-spinner mr-2" aria-hidden="true" />
       )}
-      <span className={loading ? 'opacity-75' : ''}>
-        {children}
-      </span>
+      {loading ? (
+        <span className="opacity-75">
+          {children}
+        </span>
+      ) : (
+        children
+      )}
     </button>
   )
 } 

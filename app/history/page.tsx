@@ -267,7 +267,7 @@ export default function HistoryPage() {
                   variant="outline"
                   className="w-full"
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="w-4 h-4 mr-2" />
                   Export CSV
                 </Button>
               </div>
@@ -311,11 +311,11 @@ export default function HistoryPage() {
                         variant="outline"
                         size="sm"
                       >
-                        <Copy className="w-3 h-3" />
+                        <Copy className="w-3 h-3 mr-1" />
                         {copiedId === generation.id ? 'Copied!' : 'Copy'}
                       </Button>
                       <Button variant="outline" size="sm">
-                        <ExternalLink className="w-3 h-3" />
+                        <ExternalLink className="w-3 h-3 mr-1" />
                         View
                       </Button>
                     </div>
