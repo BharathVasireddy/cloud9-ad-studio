@@ -138,11 +138,11 @@ export const PLATFORM_LIMITS = {
   },
   facebook: {
     headline: {
-      maxLength: 40,
+      maxLength: 255,
       maxCount: 5,
     },
     description: {
-      maxLength: 125,
+      maxLength: 2200,
       maxCount: 5,
     },
   },

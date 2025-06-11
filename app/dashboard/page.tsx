@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 import { useAuth } from '../../hooks/useAuth'
 import { Button } from '../../components/ui/Button'
 import { Card, CardHeader, CardContent } from '../../components/ui/Card'
@@ -78,9 +79,11 @@ export default function DashboardPage() {
               </p>
             </CardHeader>
             <CardContent>
-              <Button variant="primary" className="w-full">
-                Get Started
-              </Button>
+              <Link href="/generate">
+                <Button variant="primary" className="w-full">
+                  Get Started
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
@@ -134,10 +137,12 @@ export default function DashboardPage() {
               <p className="text-gray-400 mb-6 text-center max-w-md">
                 Generate high-converting ad copy for Google and Facebook with AI assistance. Your campaigns will appear here once you get started.
               </p>
-              <Button variant="primary" className="flex-shrink-0 px-6 py-3 font-semibold whitespace-nowrap">
-                <Plus className="w-4 h-4 mr-2 flex-shrink-0" />
-                <span className="text-sm sm:text-base">Create Your First Campaign</span>
-              </Button>
+              <Link href="/generate">
+                <Button variant="primary" className="flex-shrink-0 px-6 py-3 font-semibold whitespace-nowrap">
+                  <Plus className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span className="text-sm sm:text-base">Create Your First Campaign</span>
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
