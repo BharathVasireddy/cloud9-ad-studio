@@ -4,32 +4,17 @@ import React from 'react'
 import Link from 'next/link'
 import { Card, CardHeader, CardContent } from '../../components/ui/Card'
 import { Button } from '../../components/ui/Button'
-import { ArrowLeft, Chrome, Facebook, Sparkles } from 'lucide-react'
+import Header from '../../components/layout/Header'
+import { Chrome, Facebook, Sparkles } from 'lucide-react'
 
 export default function GeneratePage() {
   return (
     <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans']">
-      {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900/50 sticky top-0 z-50 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4 h-16">
-            <Link href="/dashboard">
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Back to Dashboard
-              </Button>
-            </Link>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <h1 className="text-xl font-bold text-white">
-                <span className="text-gradient-animated">Generate Ad Copy</span>
-              </h1>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header
+        title="Generate Ad Copy"
+        subtitle="Select the advertising platform to generate optimized ad copy"
+        showBackButton={true}
+      />
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

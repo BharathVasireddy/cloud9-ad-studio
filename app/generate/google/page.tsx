@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
 import { Card, CardHeader, CardContent } from '../../../components/ui/Card'
 import { Button } from '../../../components/ui/Button'
 import { Input } from '../../../components/ui/Input'
 import { LoadingSpinner } from '../../../components/ui/LoadingSpinner'
-import { ArrowLeft, Chrome, Sparkles, Copy, RefreshCw, AlertTriangle, CheckCircle } from 'lucide-react'
+import Header from '../../../components/layout/Header'
+import { Chrome, Sparkles, Copy, RefreshCw, AlertTriangle } from 'lucide-react'
 import { GoogleAdsGenerationRequest, GoogleAdsGenerationResponse } from '../../../lib/openai'
 
 export default function GoogleAdsGeneratePage() {
@@ -127,27 +127,13 @@ export default function GoogleAdsGeneratePage() {
 
   return (
     <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans']">
-      {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900/50 sticky top-0 z-50 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4 h-16">
-            <Link href="/generate">
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Back
-              </Button>
-            </Link>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                <Chrome className="w-5 h-5 text-white" />
-              </div>
-              <h1 className="text-xl font-bold text-white">
-                <span className="text-gradient-animated">Google Ads Generator</span>
-              </h1>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header
+        title="Google Ads Generator"
+        subtitle="Generate compliant Google Ads copy with AI assistance"
+        showBackButton={true}
+        backButtonHref="/generate"
+        backButtonText="Back to Generate"
+      />
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

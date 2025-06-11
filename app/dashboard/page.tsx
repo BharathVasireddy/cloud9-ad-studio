@@ -2,57 +2,18 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { useAuth } from '../../hooks/useAuth'
-import { Button } from '../../components/ui/Button'
 import { Card, CardHeader, CardContent } from '../../components/ui/Card'
-import { Sparkles, Plus, Users, BarChart3, LogOut } from 'lucide-react'
+import { Button } from '../../components/ui/Button'
+import Header from '../../components/layout/Header'
+import { Sparkles, Plus, Users, BarChart3 } from 'lucide-react'
 
 export default function DashboardPage() {
-  const { user, signOut } = useAuth()
-
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-    } catch (error) {
-      console.error('Sign out error:', error)
-    }
-  }
-
   return (
     <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans']">
-      {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900/50 sticky top-0 z-50 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <h1 className="text-xl font-bold text-white">
-                <span className="text-gradient-animated">Ad Studio</span>
-              </h1>
-            </div>
-
-            {/* User Menu */}
-            <div className="flex items-center gap-2 sm:gap-4">
-              <span className="text-gray-400 text-sm hidden lg:block truncate max-w-[120px]">
-                Welcome, {user?.displayName || user?.email}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSignOut}
-                className="flex-shrink-0 flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 text-sm"
-              >
-                <LogOut className="w-4 h-4 flex-shrink-0" />
-                <span className="hidden md:inline font-medium">Sign Out</span>
-                <span className="md:hidden font-medium">Exit</span>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header 
+        title="Ad Studio" 
+        subtitle="Create high-converting Google and Facebook ads with AI assistance"
+      />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
