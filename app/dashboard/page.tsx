@@ -10,7 +10,7 @@ import { Sparkles, Plus, Users, BarChart3 } from 'lucide-react'
 export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-950 font-['Plus_Jakarta_Sans']">
-      <Header title="Ad Studio" />
+      <Header />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -95,10 +95,10 @@ export default function DashboardPage() {
               <p className="text-gray-400 mb-6 text-center max-w-md">
                 Generate high-converting ad copy for Google and Facebook with AI assistance. Your campaigns will appear here once you get started.
               </p>
-              <Link href="/generate">
-                <Button variant="primary" className="flex-shrink-0 px-6 py-3 font-semibold whitespace-nowrap">
+              <Link href="/generate" className="inline-block">
+                <Button variant="primary" className="flex-shrink-0 px-4 sm:px-6 py-3 font-semibold whitespace-nowrap min-w-0">
                   <Plus className="w-4 h-4 mr-2 flex-shrink-0" />
-                  <span className="text-sm sm:text-base">Create Your First Campaign</span>
+                  <span className="text-sm sm:text-base font-medium">Create Your First Campaign</span>
                 </Button>
               </Link>
             </div>

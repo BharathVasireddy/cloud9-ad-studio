@@ -8,17 +8,15 @@ import { Button } from '../ui/Button'
 import { Sparkles, ArrowLeft, User, LogOut, Settings, ChevronDown } from 'lucide-react'
 
 interface HeaderProps {
-  title: string
   showBackButton?: boolean
   backButtonHref?: string
   backButtonText?: string
 }
 
 export default function Header({ 
-  title, 
   showBackButton = false, 
   backButtonHref = '/dashboard',
-  backButtonText = 'Back to Dashboard'
+  backButtonText = 'Back'
 }: HeaderProps) {
   const { user, signOut } = useAuth()
   const router = useRouter()
@@ -71,7 +69,7 @@ export default function Header({
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <h1 className="text-lg sm:text-xl font-bold text-white truncate">
-                <span className="text-gradient-animated">{title}</span>
+                <span className="text-gradient-animated">Ad Studio</span>
               </h1>
             </div>
           </div>
